@@ -18,6 +18,7 @@ class Document(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str]
     body: Mapped[str]
+    source_url: Mapped[str | None]
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
     centre_id: Mapped[int | None] = mapped_column(ForeignKey("centres.id"))
     centre: Mapped["Centre | None"] = relationship(back_populates="documents")
