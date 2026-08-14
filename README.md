@@ -34,6 +34,19 @@ In development. Building in phases: API and data layer, then retrieval and evalu
 
 Python, FastAPI, PostgreSQL with pgvector, TypeScript, React
 
+## Planned structure
+
+app/
+    main.py # app creation and router registration
+    config.py # Settings from environment
+    database.py # engine, session, dependancy
+    models.py # database tables
+    schemas.py # request and response models
+    routers/ # endpoint definitions
+    services/ # retrieval, model calls, business logic
+tests/
+evals/ # question set and scoring script
+
 ## Licence
 
 MIT
