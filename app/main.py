@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
+from app.routers import documents
 
 app = FastAPI(title="NQS Assistant")
+app.include_router(documents.router)
 
 class Question(BaseModel):
     text: str = Field(min_length=5, max_length=500)
