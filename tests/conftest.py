@@ -7,6 +7,8 @@ import app.models as _models  # noqa: F401 - registers models on Base.metadata
 from app.database import Base, get_db
 from app.main import app
 
+from app.schemas import ComplianceAnswer
+
 TEST_DATABASE_URL = "postgresql+psycopg2://nqs:localdev@localhost:5432/nqs_test"
 
 engine = create_engine(TEST_DATABASE_URL)
@@ -42,3 +44,16 @@ def no_real_llm_calls(monkeypatch):
         "app.main.answer_question",
         lambda question, context="": "Stubbed answer",
     )             
+
+
+
+@pytest.fixture(autouse=True)
+def no_real_llm_calls(monkeypatch):
+    monkeypatch.setattr(
+        "app.main.structured_answer",
+        lambda question, context="": ComplianceAnswer(
+            answer="Stubbed answer",
+            confidence="high",
+            clauses=["Regulation 123"],
+        ),
+    )    

@@ -1,6 +1,12 @@
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field
+from typing import Literal
 
+class ComplianceAnswer(BaseModel):
+    answer: str
+    confidence: Literal["high", "medium", "low"]
+    clauses: list[str] = []
+    caveat: str | None = None
 
 class DocumentCreate(BaseModel):
     title: str = Field(min_length=1, max_length=300)
@@ -31,3 +37,7 @@ class CentreRead(BaseModel):
     id: int
     name: str
     state: str
+
+class Question(BaseModel):
+    text: str = Field(min_length=5, max_length=500)
+    centre_id: int | None = None    
