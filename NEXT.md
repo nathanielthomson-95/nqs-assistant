@@ -25,6 +25,18 @@
 - Restructure: move business logic out of routers into app/services/
 - Ass a POST /centres route and test to match
 
+# Next session
+
+- docker compose up -d
+- Activate .venv, then alembic upgrade head
+- Phase 2 begins: first direct model call, replacing the hardcoded /ask
+- Log token counts and cost from the very first call
+
+## Before starting
+
+- Anthropic API key from console.anthropic.com, ~$10 credit
+- Key goes in .env, confirm .env is in .gitignore first
+
 ## Git workflow reminder
 
 git switch -c feat/some-name

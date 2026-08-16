@@ -30,3 +30,17 @@ the package, so every test errored with
 at the fixture, but the cause was an import three lines earlier silently
 overwriting a name. Fixed with `import app.models as _models`, which binds
 a different name. Cost about fifteen minutes.
+
+## 2026-08-14 Routers handle HTTP, services own the data
+
+Split the database work out of the route functions into app/services/.
+Routers now validate the request, call a service function, and return.
+Services take a session and do the SQLAlchemy work.
+
+Two reasons. Route functions stay short enough to read at a glance, which
+matters when someone opens the repo cold. And the logic can be tested
+without going through HTTP if that ever becomes useful.
+
+Evidence the split was clean: all seven existing document tests passed
+unchanged after every line of database code moved into a new layer. No
+test knew the difference, which is the point.
