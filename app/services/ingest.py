@@ -17,9 +17,12 @@ def extract_pages(pdf_path: Path) -> list[tuple[int, str]]:
     ]    
 
 def chunk_text(text: str, size: int = 800, overlap: int = 150) -> list[str]:
+    if overlap >= size:
+        raise ValueError("overlap must be smaller than size")
     chunks, start = [], 0
     while start < len(text):
         chunks.append(text[start:start + size])
+        start += size - overlap
     return chunks
 
 def chunk_by_regulation(page_text: str, page_number: int) -> list[dict]:
