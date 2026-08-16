@@ -19,6 +19,12 @@
 - set up GitHub Actions to run pytest on every push
 - Add a build badge to the README
 
+# Next session
+
+- docker compose -d, activate .venv, alembic upgrade head
+- Restructure: move business logic out of routers into app/services/
+- Ass a POST /centres route and test to match
+
 ## Git workflow reminder
 
 git switch -c feat/some-name
