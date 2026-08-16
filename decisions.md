@@ -44,3 +44,71 @@ without going through HTTP if that ever becomes useful.
 Evidence the split was clean: all seven existing document tests passed
 unchanged after every line of database code moved into a new layer. No
 test knew the difference, which is the point.
+
+## 2026-08-16 Gemini free tier over a paid API
+
+Using Google Gemini via AI Studio rather than a paid provider. No credit
+card, and the free tier covers development volume comfortably. All
+provider-specific code lives in app/services/llm.py, so swapping later is
+a one-file change.
+
+Trade-off: free tiers can tighten rate limits without warning and go down
+with no compensation. Fine for development and a portfolio demo, not for
+anything anyone depends on.
+
+## 2026-08-16 Model identifiers are volatile
+
+gemini-2.5-flash returned a 404 saying it is no longer available to new
+users. models.list() shows what exists, not what a given key can call, so
+the only real test is making the call. Also avoiding the -latest aliases,
+since they move underneath you and would make eval results
+irreproducible.
+
+The error was one line at the bottom of a sixty-line framework traceback.
+Reading tracebacks from the bottom up is the habit that found it.
+
+## 2026-08-16 Push protection caught a hardcoded key
+
+GitHub push protection blocked a push containing the Gemini key in two
+places: as the default value of gemini_api_key in config.py, and copied
+into .env.example. Nothing reached GitHub.
+
+Fixed by regenerating the key, emptying both, and rewriting the branch
+history with git reset --soft rather than clicking the unblock link.
+
+Two rules from this. A settings default is a public value by definition,
+so it can never hold a secret. And .env.example documents variable names,
+never values.## 2026-08-16 Gemini free tier over a paid API
+
+Using Google Gemini via AI Studio rather than a paid provider. No credit
+card, and the free tier covers development volume comfortably. All
+provider-specific code lives in app/services/llm.py, so swapping later is
+a one-file change.
+
+Trade-off: free tiers can tighten rate limits without warning and go down
+with no compensation. Fine for development and a portfolio demo, not for
+anything anyone depends on.
+
+## 2026-08-16 Model identifiers are volatile
+
+gemini-2.5-flash returned a 404 saying it is no longer available to new
+users. models.list() shows what exists, not what a given key can call, so
+the only real test is making the call. Also avoiding the -latest aliases,
+since they move underneath you and would make eval results
+irreproducible.
+
+The error was one line at the bottom of a sixty-line framework traceback.
+Reading tracebacks from the bottom up is the habit that found it.
+
+## 2026-08-16 Push protection caught a hardcoded key
+
+GitHub push protection blocked a push containing the Gemini key in two
+places: as the default value of gemini_api_key in config.py, and copied
+into .env.example. Nothing reached GitHub.
+
+Fixed by regenerating the key, emptying both, and rewriting the branch
+history with git reset --soft rather than clicking the unblock link.
+
+Two rules from this. A settings default is a public value by definition,
+so it can never hold a secret. And .env.example documents variable names,
+never values.

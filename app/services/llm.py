@@ -1,5 +1,6 @@
 import logging
 import time
+from functools import lru_cache
 
 from google import genai
 from google.genai import types
@@ -15,19 +16,21 @@ SYSTEM_PROMPT = (
     "plainly rather than guessing."
 )
 
-client = genai.Client(api_key=settings.gemini_api_key)
+
+@lru_cache
+def get_client() -> genai.Client:
+    return genai.Client(api_key=settings.gemini_api_key)
 
 
 def answer_question(question: str, context: str = "") -> str:
     prompt = f"Context:\n{context}\n\nQuestion: {question}" if context else question
 
     started = time.perf_counter()
-    response = client.models.generate_content(
+    response = get_client().models.generate_content(
         model="gemini-3.1-flash-lite",
         contents=prompt,
         config=types.GenerateContentConfig(
             system_instruction=SYSTEM_PROMPT,
-            temperature=0.2,
             max_output_tokens=800,
         ),
     )

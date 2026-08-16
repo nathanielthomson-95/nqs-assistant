@@ -37,6 +37,13 @@
 - Anthropic API key from console.anthropic.com, ~$10 credit
 - Key goes in .env, confirm .env is in .gitignore first
 
+# Next session
+
+- docker compose up -d
+- Activate .venv, then alembic upgrade head
+- Move SYSTEM_PROMPT out of llm.py into a versioned prompts/ file
+- Structured output: ask for JSON, validate with Pydantic
+
 ## Git workflow reminder
 
 git switch -c feat/some-name
