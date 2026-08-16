@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
 from app.routers import documents, centres
+from app.services.llm import answer_question
 
 app = FastAPI(title="NQS Assistant")
 
@@ -25,5 +26,5 @@ async def health() -> dict[str, str]:
 
 
 @app.post("/ask", response_model=Answer)
-async def ask_question(question: Question) -> Answer:
-    return Answer(answer=f"You asked: {question.text}", citations=[])
+def ask_question(question: Question) -> Answer:
+    return Answer(answer=answer_question(question.text), citations=[])

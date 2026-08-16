@@ -32,4 +32,13 @@ def client(db_session):
 
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
-    app.dependency_overrides.clear()                
+    app.dependency_overrides.clear()   
+
+
+
+@pytest.fixture(autouse=True)
+def no_real_llm_calls(monkeypatch):
+    monkeypatch.setattr(
+        "app.main.answer_question",
+        lambda question, context="": "Stubbed answer",
+    )             

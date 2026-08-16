@@ -45,3 +45,10 @@ def test_get_missing_document_returns_404(client):
     response = client.get("/documents/9999")
     assert response.status_code == 404
     assert response.json()["detail"] == "Document not found"
+
+
+
+def test_ask_returns_answer(client):
+    response = client.post("/ask", json={"text": "What is the ratio for under twos?"})
+    assert response.status_code == 200
+    assert response.json()["answer"] == "Stubbed answer"
