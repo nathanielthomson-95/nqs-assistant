@@ -47,6 +47,10 @@ app/
 tests/
 evals/ # question set and scoring script
 
+## Tests
+
+![tests](https://github.com/nathanielthomson-95/nqs-assistant/actions/workflows/tests.yml/badge.svg)
+
 ## Licence
 
 MIT
