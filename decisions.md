@@ -112,3 +112,19 @@ history with git reset --soft rather than clicking the unblock link.
 Two rules from this. A settings default is a public value by definition,
 so it can never hold a secret. And .env.example documents variable names,
 never values.
+
+## 2026-08-16 Prompts as versioned files, structured output validated
+
+Prompts moved out of Python strings into prompts/*.md. They will change
+constantly, and a markdown diff is readable in a way a diff of a
+triple-quoted string is not.
+
+/ask now returns validated JSON rather than free text, via a
+ComplianceAnswer Pydantic model with a Literal on the confidence field.
+json.loads only proves the response is valid JSON, not that it has the
+shape asked for, so validation happens at the boundary and fails loudly.
+One retry on malformed output, since roughly one response in fifty comes
+back wrong and a second attempt almost always fixes it.
+
+Markdown fences are stripped defensively. The model wraps JSON in them
+regardless of instructions.

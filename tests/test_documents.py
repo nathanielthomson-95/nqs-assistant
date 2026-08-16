@@ -52,3 +52,13 @@ def test_ask_returns_answer(client):
     response = client.post("/ask", json={"text": "What is the ratio for under twos?"})
     assert response.status_code == 200
     assert response.json()["answer"] == "Stubbed answer"
+
+
+
+def test_ask_returns_answer(client):
+    response = client.post("/ask", json={"text": "What is the ratio for under twos?"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["answer"] == "Stubbed answer"
+    assert data["confidence"] == "high"
+    assert data["clauses"] == ["Regulation 123"]    

@@ -44,6 +44,12 @@
 - Move SYSTEM_PROMPT out of llm.py into a versioned prompts/ file
 - Structured output: ask for JSON, validate with Pydantic
 
+# Next session
+
+- docker compose up -d, activate .venv, alembic upgrade head
+- Download the NQS and National Regulations source documents
+- Write the chunking function, store chunks with source references
+
 ## Git workflow reminder
 
 git switch -c feat/some-name
