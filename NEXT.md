@@ -56,6 +56,19 @@
 - Enable the pgvector extension, add the embedding column
 - Generate embeddings with gemini-embedding-001, store them
 
+# Next session
+
+- docker compose up -d
+- Activate .venv, then alembic upgrade head
+- Enable the pgvector extension, add the embedding column
+- Generate embeddings with gemini-embedding-001, store them
+
+## Rules worth keeping
+
+- pip freeze > requirements.txt immediately after any pip install
+- pytest locally before every push
+- Low priority: bump actions/checkout to v5, setup-python to v6
+
 ## Git workflow reminder
 
 git switch -c feat/some-name

@@ -153,3 +153,36 @@ than a nice-to-have.
 
 Started with a naive fixed-size splitter first to understand the failure
 mode before replacing it.
+
+## 2026-08-16 Source documents stay out of the repo
+
+The NQS and National Regulations PDFs live in data/raw/, gitignored. Git
+stores every version of every file forever, so a 20MB PDF committed three
+times is 60MB in the repo permanently. They are also ACECQA's documents,
+not mine to redistribute. A committed .gitkeep preserves the folder so a
+fresh clone has somewhere to put them.
+
+## 2026-08-16 Structural chunking, and source refs from the start
+
+Chunking on regulation boundaries rather than fixed-size windows. A clause
+cut in half retrieves badly and cites worse, and regulatory text has clean
+structure to split on, so fixed windows throw away information the
+document hands over for free. Wrote the naive fixed-size version first to
+understand the failure mode before replacing it.
+
+Every chunk carries a source_ref (regulation number and page) from the
+moment it is created. Citations cannot be retrofitted without reprocessing
+the whole corpus, and citation accuracy is the point of this project.
+
+## 2026-08-16 A hang is a worse failure than a wrong answer
+
+A typo in the chunking loop stopped start advancing, so the loop never
+terminated. CI gave no traceback, just exit code 143 after a timeout, and
+it took two runs to work out it was a hang rather than a cancelled job.
+
+Two fixes. A guard clause rejecting overlap >= size turns a silent hang
+into an immediate readable error. And pytest-timeout, added locally and to
+the workflow, so a hang fails in ten seconds instead of burning a CI run.
+
+Broader lesson: run pytest locally before pushing. CI is for catching what
+my machine hides, not for finding typos.
