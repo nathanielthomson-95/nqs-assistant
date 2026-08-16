@@ -50,6 +50,12 @@
 - Download the NQS and National Regulations source documents
 - Write the chunking function, store chunks with source references
 
+# Next session
+
+- docker compose up -d, activate .venv, alembic upgrade head
+- Enable the pgvector extension, add the embedding column
+- Generate embeddings with gemini-embedding-001, store them
+
 ## Git workflow reminder
 
 git switch -c feat/some-name
