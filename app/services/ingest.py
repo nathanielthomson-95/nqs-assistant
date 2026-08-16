@@ -17,7 +17,7 @@ def extract_pages(pdf_path: Path) -> list[tuple[int, str]]:
     ]    
 
 def chunk_text(text: str, size: int = 800, overlap: int = 150) -> list[str]:
-    chunks, start - [], 0
+    chunks, start = [], 0
     while start < len(text):
         chunks.append(text[start:start + size])
     return chunks
