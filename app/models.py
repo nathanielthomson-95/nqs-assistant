@@ -22,3 +22,12 @@ class Document(Base):
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
     centre_id: Mapped[int | None] = mapped_column(ForeignKey("centres.id"))
     centre: Mapped["Centre | None"] = relationship(back_populates="documents")
+
+
+class Chunk(Base):
+    __tablename__ = "chunks"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    document_id: Mapped[int] = mapped_column(ForeignKey("documents.id"))
+    content: Mapped[str]
+    source_ref: Mapped[str]
