@@ -186,3 +186,45 @@ the workflow, so a hang fails in ten seconds instead of burning a CI run.
 
 Broader lesson: run pytest locally before pushing. CI is for catching what
 my machine hides, not for finding typos.
+
+## 2026-08-16 pgvector in the existing Postgres
+
+Vectors live in the same Postgres the rest of the app uses, via the
+pgvector extension, rather than in a dedicated vector database. It
+handles this scale comfortably, and "I used the database I already had"
+is a better engineering answer than "I added a service".
+
+## 2026-08-16 768 dimensions, not 3072
+
+gemini-embedding-001 returns 3072 dimensions by default. Requested 768
+via output_dimensionality instead, because pgvector's HNSW index caps at
+2000 dimensions, and an unindexed vector column means sequential scans
+forever. Storage drops to a quarter with no meaningful retrieval quality
+loss on a single regulatory corpus.
+
+Also typed 3702 instead of 3072 when first creating the column. Caught it
+before ingesting. Two minutes to fix at that point, versus a full re-embed
+of the corpus if it had been found later. The dimension is fixed when the
+column is created.
+
+## 2026-08-16 Free tier counts texts, not calls
+
+Hit a 429 after 100 chunks. The quota is 100 embed requests per minute,
+and a batch of 50 texts counts as 50 requests, so batching reduces round
+trips but not quota usage.
+
+Handled with 25-chunk batches, a 20 second pause between them, and
+exponential backoff on 429. 442 chunks now ingests in about six minutes.
+This is the trade-off accepted by choosing the free tier, and a paid key
+would be the first change if this ever served real users.
+
+## 2026-08-16 Test fixtures provision what they need
+
+The test database had no pgvector extension, so every test errored with
+"type vector does not exist". Fixed by having the db_session fixture run
+CREATE EXTENSION IF NOT EXISTS vector itself rather than assuming a
+prepared database.
+
+Doing it by hand would have fixed my machine and left CI broken. Same
+principle as requirements.txt: a fresh machine should run the suite with
+nothing but the repo.

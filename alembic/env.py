@@ -8,6 +8,7 @@ from alembic import context
 from app.config import settings
 from app.database import Base
 import app.models # noqa: F401 - registers models on Base.metadata
+import pgvector.sqlalchemy # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

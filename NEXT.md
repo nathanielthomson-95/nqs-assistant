@@ -63,6 +63,14 @@
 - Enable the pgvector extension, add the embedding column
 - Generate embeddings with gemini-embedding-001, store them
 
+# Next session
+
+- docker compose up -d
+- Activate .venv, then alembic upgrade head
+- Retrieval query using the <=> cosine operator
+- Join retrieval to structured_answer, pass real context
+- First real citations
+
 ## Rules worth keeping
 
 - pip freeze > requirements.txt immediately after any pip install

@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
 import app.models as _models  # noqa: F401 - registers models on Base.metadata
@@ -17,6 +17,8 @@ TestingSessionLocal = sessionmaker(bind=engine, autoflush=False)
 
 @pytest.fixture
 def db_session():
+    with engine.begin() as conn:
+        conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
     Base.metadata.create_all(engine)
     session = TestingSessionLocal()
     try:
