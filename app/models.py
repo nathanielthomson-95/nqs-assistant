@@ -2,6 +2,7 @@ from datetime import datetime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database import Base
+from pgvector.sqlalchemy import Vector
 
 class Centre(Base):
     __tablename__ = "centres"
@@ -31,3 +32,4 @@ class Chunk(Base):
     document_id: Mapped[int] = mapped_column(ForeignKey("documents.id"))
     content: Mapped[str]
     source_ref: Mapped[str]
+    embedding: Mapped[list[float] | None] = mapped_column(Vector(768))
