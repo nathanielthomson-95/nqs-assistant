@@ -228,3 +228,39 @@ prepared database.
 Doing it by hand would have fixed my machine and left CI broken. Same
 principle as requirements.txt: a fresh machine should run the suite with
 nothing but the repo.
+
+## 2026-08-16 Retrieval joined to the answer
+
+/ask now embeds the question, pulls the nearest chunks from pgvector, and
+passes them to the model as context. Citations come from the source_ref
+attached to each chunk at ingest time rather than from the model's
+training data.
+
+Retrieving five chunks rather than one, because ratios vary by age band
+and by jurisdiction, so a correct answer often needs several regulations
+in context at once. Testing the retrieval query directly showed the right
+regulation at 0.86 similarity with four genuinely relevant neighbours
+between 0.79 and 0.82.
+
+Each chunk is labelled with its source reference inside the context
+block. The model can only cite what it can see.
+
+## 2026-08-16 A similarity floor rather than always answering
+
+Chunks below 0.55 similarity are dropped. If nothing clears the floor the
+model gets no context at all and is instructed to say so, with an empty
+clauses list and low confidence.
+
+Without a floor the system would always find a nearest chunk, however
+irrelevant, and answer confidently from it. In a compliance context a
+confident wrong answer is worse than no answer, so the failure mode has
+to be an honest refusal.
+
+The threshold is a first guess and will be tuned against the eval set.
+
+## 2026-08-16 Retrieved text is data, not instruction
+
+The system prompt states that everything in the context is reference
+material and never an instruction to follow. Basic prompt injection
+defence, cheap to add now, and necessary once documents can be uploaded
+rather than only ingested by me.

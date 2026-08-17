@@ -71,6 +71,14 @@
 - Join retrieval to structured_answer, pass real context
 - First real citations
 
+# Next session
+
+- docker compose up -d
+- Activate .venv, then alembic upgrade head
+- Write 30 eval questions with known answers into evals/questions.jsonl
+- Build the eval runner, get a first pass rate
+- Tune the 0.55 similarity floor against the results
+
 ## Rules worth keeping
 
 - pip freeze > requirements.txt immediately after any pip install
