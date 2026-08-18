@@ -1,0 +1,29 @@
+{"question": "What is the educator to child ratio for children from birth to 24 months in a centre-based service?", "must_contain": [["1 educator to 4", "1:4", "one educator to four", "4 children"]], "must_cite": ["Regulation 123"]}
+{"question": "What is the educator to child ratio for children over 24 months and less than 36 months in a centre-based service?", "must_contain": [["1 educator to 5", "1:5", "one educator to five", "5 children"]], "must_cite": ["Regulation 123"]}
+{"question": "What is the educator to child ratio for children aged 36 months or over, not including children over preschool age, in a centre-based service?", "must_contain": [["1 educator to 11", "1:11", "one educator to eleven", "11 children"]], "must_cite": ["Regulation 123"]}
+{"question": "How much unencumbered indoor space is required per child?", "must_contain": [["3.25", "3\u00b725", "3-25"], ["square metre", "square meter", "sq m", "m2"]], "must_cite": ["Regulation 107"]}
+{"question": "How much unencumbered outdoor space is required per child?", "must_contain": [["7 square metre", "7 square meter", "7 sq m", "7m2"]], "must_cite": ["Regulation 108"]}
+{"question": "How long must a record relating to an incident, injury, illness or trauma suffered by a child be kept?", "must_contain": [["25 years", "aged 25", "age of 25"]], "must_cite": ["Regulation 183"]}
+{"question": "What counts as a serious incident?", "must_contain": [["death"], ["hospital", "medical practitioner"], ["missing", "cannot be accounted for"]], "must_cite": ["Regulation 12"]}
+{"question": "How soon must the death of a child be notified to the regulatory authority?", "must_contain": [["24 hours"], ["as soon as practicable"]], "must_cite": ["Regulation 176"]}
+{"question": "Within what period must a notice under section 173(3) of the Law be provided to the regulatory authority?", "must_contain": [["14 days"]], "must_cite": ["Regulation 174"]}
+{"question": "What are the requirements for designating an educational leader?", "must_contain": [["in writing", "designate"], ["suitably qualified and experienced", "qualified and experienced"]], "must_cite": ["Regulation 118"]}
+{"question": "What does actively working towards a qualification mean?", "must_contain": [["enrolled"], ["documentary evidence", "evidence"]], "must_cite": ["Regulation 10"]}
+{"question": "What first aid and related qualifications must be held by educators in attendance at a centre-based service?", "must_contain": [["first aid"], ["anaphylaxis"], ["asthma"]], "must_cite": ["Regulation 136"]}
+{"question": "Who must keep a child enrolment record?", "must_contain": [["approved provider"], ["family day care educator"]], "must_cite": ["Regulation 160"]}
+{"question": "What matters must an education and care service have policies and procedures for?", "must_contain": [["health and safety"], ["emergency and evacuation", "evacuation"], ["infectious disease"]], "must_cite": ["Regulation 168"]}
+{"question": "Where do the regulations address safety during water-based activities?", "must_contain": [["water safety", "water-based"], ["polic", "procedure"]], "must_cite": ["Regulation 168"]}
+{"question": "Under what conditions may medication be administered to a child?", "must_contain": [["authoris", "authoriz"]], "must_cite": ["Regulation 93"]}
+{"question": "What details must be recorded in a medication record?", "must_contain": [["name of the child", "child's name"], ["authorisation", "authorised"]], "must_cite": ["Regulation 92"]}
+{"question": "What must be included in an incident, injury, trauma and illness record?", "must_contain": [["name and age", "name of the child"], ["circumstances"]], "must_cite": ["Regulation 87"]}
+{"question": "What must emergency and evacuation procedures set out?", "must_contain": [["instructions"], ["floor plan"]], "must_cite": ["Regulation 97"]}
+{"question": "How often must emergency and evacuation procedures be rehearsed?", "must_contain": [["3 months", "three months"]], "must_cite": ["Regulation 97"]}
+{"question": "What information must a staff record include?", "must_contain": [["nominated supervisor"], ["educational leader"]], "must_cite": ["Regulation 145"]}
+{"question": "What information about the provider approval must be displayed at the service premises?", "must_contain": [["provider approval number", "approval number"], ["name of the approved provider", "approved provider"]], "must_cite": ["Regulation 173"]}
+{"question": "What must a notice of change to the nominated supervisor include?", "must_contain": [["service approval number", "approval number"], ["consent"]], "must_cite": ["Regulation 35"]}
+{"question": "What are the requirements for an educator at a centre-based service who is under 18 years of age?", "must_contain": [["not work alone", "does not work alone"], ["supervised"]], "must_cite": ["Regulation 120"]}
+{"question": "If children at a centre-based service are of mixed ages, how is the minimum number of educators determined?", "must_contain": [["at all times"], ["ratio"]], "must_cite": ["Regulation 123"]}
+{"question": "What outcomes must an educational program contribute to for each child?", "must_contain": [["strong sense of identity"], ["wellbeing"], ["effective communicator"]], "must_cite": ["Regulation 73"]}
+{"question": "How much does a childcare centre director earn in Victoria?", "expect_refusal": true}
+{"question": "What is the Child Care Subsidy activity test?", "expect_refusal": true}
+{"question": "What are the current award pay rates for a certificate III qualified educator?", "expect_refusal": true}

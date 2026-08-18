@@ -264,3 +264,159 @@ The system prompt states that everything in the context is reference
 material and never an instruction to follow. Basic prompt injection
 defence, cheap to add now, and necessary once documents can be uploaded
 rather than only ingested by me.
+
+## 2026-08-17 First eval baseline: 22/30 (73%)
+
+Thirty questions covering ratios, space requirements, record keeping,
+qualifications, notification timeframes and policies, plus five questions
+the corpus cannot answer. Expected values verified against the source PDF,
+not against the system's own answers. An eval set built from the system's
+output would score near 100% and measure nothing.
+
+22/30 passed. Recorded before any tuning.
+
+The first attempt at this run scored 20%, but that measured the eval file
+rather than the system: most expected values were still TODO placeholders,
+so correct answers were being compared against the literal string "TODO".
+Worth remembering that a first eval run often grades the grader.
+
+## 2026-08-17 Chapter 7 crowds out the base regulations
+
+The most serious failure was not a refusal or a bad citation. Asked for
+the educator to child ratio for children aged 24 to 36 months, the system
+answered 1 educator to 4 children. The correct figure is 1 to 5, in
+Regulation 123.
+
+The retrieved chunks explain it: 357, 275, 326, 342, 263. Regulation 123
+never reached the model. Everything above roughly 260 is Chapter 7,
+jurisdiction-specific and transitional provisions that are semantically
+near-identical to the base regulations, so on ratio questions they take
+every retrieval slot.
+
+This is exactly the failure mode the project exists to avoid: a confident,
+plainly stated, wrong compliance answer. Retrieval quality, not model
+quality.
+
+Two other real defects found in the same run, both deferred so that only
+one variable changes at a time:
+
+- Regulation 183 runs across pages 191 and 192. The continuation page has
+  no heading, so it was chunked with a bare "page 192" reference. The
+  answer was right and the citation was unusable. Fix is to carry the last
+  seen regulation number forward across page boundaries at ingest.
+- The refusal check requires an empty clauses list, but the model can
+  decline in substance while still attaching page references. Either
+  loosen the check or instruct the prompt to return no clauses when
+  declining.
+
+Also removed one eval question as invalid rather than fixing the system
+around it. "What are the seven quality areas of the NQS" was written as a
+refusal case, but the retrieved chunks came from pages 327 to 335: the NQS
+is a schedule to the National Regulations, so the corpus does contain it.
+Expecting a refusal for something the documents hold was my error, not the
+system's. 29 questions from here, so the next score is not directly
+comparable to 73%.
+
+## 2026-08-17 TOP_K 5 to 8: 73% to 83%
+
+Chapter 7 jurisdictional provisions were filling all five retrieval slots
+on ratio questions. Eight slots let the base regulations through. Also
+fixed two citation failures as a side effect.
+
+## 2026-08-17 Regulations split across pages lost their identity
+
+Four of the five remaining failures had one cause. Regulation 123 breaks
+across pages 134 and 135: the birth-to-24-months ratio is on the labelled
+chunk, and the 1:5 ratio, the 1:11 ratio and the mixed-ages subregulation
+are all on the following page in a chunk with no heading. Regulation 120
+splits the same way.
+
+Two defects in the chunker. Continuation text got a bare page reference
+instead of inheriting the regulation it belongs to. And text before the
+first heading on a page was discarded entirely, which is precisely where
+continuations live.
+
+Fixed by carrying the last seen regulation number across page boundaries
+and capturing the leading text. Before: X/29. After: Y/29.
+
+The lesson is that chunk boundaries are not a formatting detail. A
+document's page breaks have nothing to do with its logical structure, and
+chunking that follows pages will cut clauses in half and strand the half
+that answers the question.
+
+## 2026-08-18 Regulations split across pages lost their identity
+
+Four of five remaining eval failures had one cause. Regulation 123 breaks
+across pages 134 and 135: the birth-to-24-months ratio sits in the
+labelled chunk, while the 1:5 ratio, the 1:11 ratio and the mixed-ages
+subregulation are all on the following page in a chunk with no heading.
+Regulation 120 splits the same way.
+
+Two defects in the chunker. Continuation text got a bare page reference
+instead of inheriting the regulation it belongs to. And text before the
+first heading on a page was discarded entirely, which is exactly where
+continuations live.
+
+Fixed by carrying the last seen regulation number across page boundaries,
+capturing the leading text, and then merging chunks that share a
+regulation number into one. 566 chunks extracted, 342 after merging.
+
+Chunk boundaries are not a formatting detail. A document's page breaks
+have nothing to do with its logical structure, and chunking that follows
+pages will cut clauses in half and strand the half that answers the
+question.
+
+## 2026-08-18 Regulation numbers ascend, so they can validate themselves
+
+The chunker was matching numbered list items as headings. "Regulation 2"
+appeared eight times across pages 27 to 167, because a line like
+"2 Fire and other emergencies" inside another regulation is
+indistinguishable from a heading by appearance.
+
+It is distinguishable by position. Regulation numbers ascend through the
+document, so a heading numbered below the highest already seen cannot be
+real. Tracking the highest number seen and rejecting anything lower
+removed the false matches without touching the regex.
+
+Known trade-off: the pattern requires at least ten characters of title,
+which rejects list items like "2 Fire." but also rejects Regulation 1,
+titled simply "Title". It falls into a page-level chunk instead. Accepted,
+since loosening the rule brings the false matches back and nothing in the
+eval set depends on Regulation 1.
+
+## 2026-08-18 Embedding cache keyed by content hash
+
+Re-ingesting after a chunking change re-embedded the entire corpus every
+time, and four runs in one day exhausted the 1000-request daily free tier
+quota. The chunk text barely changes between runs, so paying to embed it
+repeatedly was pure waste.
+
+Embeddings are now cached in data/embedding_cache.json keyed by a SHA-256
+hash of the chunk text, and the cache is saved after every batch so a
+failed run keeps its progress. Only genuinely new or changed chunks cost
+quota.
+
+## 2026-08-18 A 429 does not always mean wait
+
+Two different quotas return the same status code and need opposite
+responses. A per-minute limit is transient and exponential backoff is
+correct. A per-day limit does not recover in seconds, and backing off
+against it just sleeps five minutes before failing anyway, which is what
+happened.
+
+The retry logic now inspects the error body for "PerDay" and raises
+immediately with a message rather than retrying. Reading the quota name
+in the error rather than just the status code is the difference.
+
+Also worth recording: the daily quota resets at midnight Pacific, which is
+6pm Sydney. Limits are per Google Cloud project, not per API key.
+
+## 2026-08-18 A function that is never called fails silently
+
+merge_by_regulation was written correctly and never wired into the ingest
+loop. Nothing errored. The only visible symptom was a chunk count that
+went up when it should have gone down, and that was only visible because
+the script prints counts at each stage.
+
+Added a second print after merging so the two numbers can be compared at a
+glance. Cheap instrumentation between pipeline stages pays for itself.

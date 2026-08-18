@@ -8,7 +8,7 @@ from app.services.embeddings import embed_one
 
 logger = logging.getLogger("nqs")
 
-TOP_K = 5
+TOP_K = 8
 MIN_SIMILARITY = 0.55
 
 

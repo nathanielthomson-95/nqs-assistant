@@ -227,3 +227,4 @@ dist/
 # Source documents
 data/raw/*
 !data/raw/.gitkeep
+data/embedding_cache.json
