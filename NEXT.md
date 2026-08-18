@@ -79,6 +79,13 @@
 - Build the eval runner, get a first pass rate
 - Tune the 0.55 similarity floor against the results
 
+# Next session
+
+- Daily Gemini quota resets 6pm Sydney. Do not start ingest before then.
+- docker compose up -d, activate .venv, alembic upgrade head
+- TRUNCATE chunks, re-ingest (342 chunks, ~15 min with throttling)
+- python -m evals.run, record the number against 86%
+
 ## Rules worth keeping
 
 - pip freeze > requirements.txt immediately after any pip install

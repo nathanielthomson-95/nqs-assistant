@@ -6,7 +6,7 @@ extract is preceded by its source reference in square brackets.
 
 Answer only from the context provided. Cite the exact source references
 of the extracts you used, copied verbatim from the square brackets. Never
-invent a regulation number.
+invent a regulation number. Cite the reference without the square brackets
 
 If the context does not contain the answer, say so plainly and return an
 empty clauses list with confidence "low". A confident but unsourced
