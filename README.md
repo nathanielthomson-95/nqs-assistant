@@ -51,6 +51,30 @@ evals/ # question set and scoring script
 
 ![tests](https://github.com/nathanielthomson-95/nqs-assistant/actions/workflows/tests.yml/badge.svg)
 
+## Results
+
+Retrieval accuracy: 28 to 29 of 29 eval questions, up from 22 at baseline.
+
+The eval set covers ratios, space requirements, record keeping,
+qualifications, notification timeframes and policies, plus four questions
+the source documents cannot answer, which the system is expected to
+decline rather than answer from training data.
+
+Expected answers were verified against the source document rather than
+against the system's own output. Improvements came from retrieval quality
+rather than prompting:
+
+| Change | Score |
+|---|---|
+| Baseline | 22/29 |
+| Retrieve 8 chunks rather than 5 | 24/29 |
+| Carry regulation numbers across page breaks | 25/29 |
+| Merge regulations split across pages | 28-29/29 |
+
+Scores vary by a question or two between runs, so the final figure is
+given as a range. The set is now saturated and would need harder cases to
+measure further change.
+
 ## Licence
 
 MIT

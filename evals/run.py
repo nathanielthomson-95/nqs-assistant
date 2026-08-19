@@ -16,8 +16,9 @@ from app.services.retrieval import format_context, retrieve
 
 QUESTIONS = Path("evals/questions.jsonl")
 PAUSE_SECONDS = 5
-MAX_RATE_LIMIT_RETRIES = 4
+MAX_RETRIES = 4
 RATE_LIMIT_WAIT = 60
+RETRYABLE_SERVER_CODES = (500, 502, 503, 504)
 
 
 def load_cases() -> list[dict]:
@@ -29,20 +30,35 @@ def load_cases() -> list[dict]:
 
 
 def answer_with_retry(question: str, context: str):
-    """Call the model, backing off on rate limit errors."""
-    for attempt in range(MAX_RATE_LIMIT_RETRIES):
+    """Call the model, backing off on transient rate limits and server errors.
+
+    A per-day quota is not transient, so it is raised immediately rather
+    than slept through.
+    """
+    for attempt in range(MAX_RETRIES):
         try:
             return structured_answer(question, context)
         except errors.ClientError as exc:
-            if exc.code != 429 or attempt == MAX_RATE_LIMIT_RETRIES - 1:
+            if exc.code != 429:
+                raise
+            if "PerDay" in str(exc):
+                print("       daily quota exhausted, resume after 6pm Sydney")
+                raise
+            if attempt == MAX_RETRIES - 1:
                 raise
             print(f"       rate limited, waiting {RATE_LIMIT_WAIT}s")
             time.sleep(RATE_LIMIT_WAIT)
+        except errors.ServerError as exc:
+            if exc.code not in RETRYABLE_SERVER_CODES or attempt == MAX_RETRIES - 1:
+                raise
+            wait = 10 * (attempt + 1)
+            print(f"       server error {exc.code}, waiting {wait}s")
+            time.sleep(wait)
     raise RuntimeError("unreachable")
 
 
 def check_text(answer_text: str, must_contain: list) -> bool:
-    """Each entry is either a string, or a list of acceptable phrasings."""
+    """Each entry is a string, or a list of acceptable phrasings."""
     lowered = answer_text.lower()
     for entry in must_contain:
         variants = entry if isinstance(entry, list) else [entry]
@@ -82,8 +98,8 @@ def run() -> None:
             if passed:
                 passed_count += 1
             else:
-                failures.append((question, answer, detail))
-                print(f"       answer:  {answer.answer[:140]}")
+                failures.append((question, detail))
+                print(f"       answer:  {answer.answer[:200]}")
                 print(f"       clauses: {answer.clauses}")
                 print(f"       chunks:  {[c.source_ref for c in chunks]}")
 
@@ -96,10 +112,11 @@ def run() -> None:
     pct = 100 * passed_count / total if total else 0
     print(f"\n{'=' * 60}")
     print(f"{passed_count}/{total} passed ({pct:.0f}%)")
+    print("Note: a single run is one sample. Scores vary by a question or two.")
 
     if failures:
         print(f"\n{len(failures)} failures:")
-        for question, _, detail in failures:
+        for question, detail in failures:
             print(f"  - {detail} | {question[:60]}")
 
 

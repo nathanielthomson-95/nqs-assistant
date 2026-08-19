@@ -86,6 +86,25 @@
 - TRUNCATE chunks, re-ingest (342 chunks, ~15 min with throttling)
 - python -m evals.run, record the number against 86%
 
+# Next session
+
+Phase 3 begins: the frontend.
+
+- docker compose up -d, activate .venv, alembic upgrade head
+- npm create vite@latest frontend -- --template react-ts
+- Install Tailwind, get the dev server running
+- One component: question box, calls /ask, renders the answer
+- Configure CORS on the FastAPI side for http://localhost:5173
+
+## Known, deferred
+
+- Eval set saturated at 28-29/29. Needs harder questions before it can
+  measure anything: multi-regulation answers, jurisdictional overrides,
+  false-premise questions.
+- Regulation 1 is titled "Title", too short for the heading pattern, so it
+  falls into a page-level chunk. Deliberate trade-off.
+- Bump actions/checkout to v5, setup-python to v6.
+
 ## Rules worth keeping
 
 - pip freeze > requirements.txt immediately after any pip install

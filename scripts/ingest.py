@@ -22,6 +22,7 @@ BATCH_SIZE = 25
 PAUSE_SECONDS = 20
 PAGE_SLICE = slice(21, None)  # regulations start on page 22
 CACHE_PATH = Path("data/embedding_cache.json")
+RETRYABLE_SERVER_CODES = (500, 502, 503, 504)
 
 
 def key_for(text: str) -> str:
@@ -56,10 +57,10 @@ def merge_by_regulation(chunks: list[dict]) -> list[dict]:
 
 
 def embed_with_retry(texts: list[str], max_attempts: int = 5) -> list[list[float]]:
-    """Embed a batch, backing off on per-minute rate limits.
+    """Embed a batch, backing off on transient rate limits and server errors.
 
-    A per-day quota error is not transient, so it is raised immediately
-    rather than slept through.
+    A per-day quota is not transient, so it is raised immediately rather
+    than slept through.
     """
     for attempt in range(max_attempts):
         try:
@@ -68,12 +69,18 @@ def embed_with_retry(texts: list[str], max_attempts: int = 5) -> list[list[float
             if exc.code != 429:
                 raise
             if "PerDay" in str(exc):
-                print("Daily quota exhausted. Cached progress saved, resume tomorrow.")
+                print("Daily quota exhausted. Cached progress saved, resume after 6pm.")
                 raise
             if attempt == max_attempts - 1:
                 raise
             wait = 30 * (attempt + 1)
             print(f"rate limited, waiting {wait}s")
+            time.sleep(wait)
+        except errors.ServerError as exc:
+            if exc.code not in RETRYABLE_SERVER_CODES or attempt == max_attempts - 1:
+                raise
+            wait = 10 * (attempt + 1)
+            print(f"server error {exc.code}, waiting {wait}s")
             time.sleep(wait)
     raise RuntimeError("unreachable")
 

@@ -420,3 +420,60 @@ the script prints counts at each stage.
 
 Added a second print after merging so the two numbers can be compared at a
 glance. Cheap instrumentation between pipeline stages pays for itself.
+
+## 2026-08-19 Merging split regulations: 86% to 97%
+
+Regulation 123 is now a single chunk containing all three ratios rather
+than two chunks split at a page break. Q3, Q14, Q24 and Q25 all passed
+after the change.
+
+Full progression: 73% baseline, 83% (TOP_K 5 to 8), 86% (carry regulation
+number across page breaks), 97% (merge split regulations). Every gain came
+from retrieval quality. The model and the prompt were never the problem.
+
+One remaining failure: the policies question. Regulation 168 lists roughly
+fifteen matters and the model summarises rather than enumerating. Left
+failing rather than loosening the assertion.
+
+## 2026-08-19 Merging split regulations: 86% to 97%
+
+Regulation 123 is now a single chunk containing all three ratios rather
+than two chunks split at a page break. Four questions that had been
+failing passed after the change.
+
+Full progression: 73% baseline, 83% (TOP_K 5 to 8), 86% (carry regulation
+number across page breaks), 28-29/29 (merge split regulations). 566 chunks
+extracted, 342 after merging.
+
+Every gain came from retrieval quality. The model and the prompt were
+never the problem, and I would have wasted the whole phase tuning prompts
+without the evals to point at retrieval.
+
+## 2026-08-19 Eval scores have variance
+
+The single failing question in one run passed when run again in isolation,
+with the same retrieved chunks. The model had summarised more tightly
+during the eval run and omitted elements it included the second time.
+Three runs gave 28, 29, 29.
+
+A single eval run is a sample, not a measurement. Quoting one number as
+though it were stable overstates the precision, and a change that moves
+the score by one question has told me nothing. Reporting a range.
+
+## 2026-08-19 The eval set is now saturated
+
+At 28-29 out of 29 the set can no longer detect improvement, and a drop of
+one is indistinguishable from noise. A suite that everything passes has
+stopped being a measurement.
+
+Deferred rather than fixed. When it matters, the additions are harder
+cases: questions needing two regulations combined, questions where a
+jurisdictional variant overrides the base rule, and questions with a false
+premise that should be corrected rather than answered.
+
+## 2026-08-19 A 503 is not a ClientError
+
+The retry logic caught errors.ClientError, which covers 429, and a
+transient 503 fell straight through and killed the run. Both retry paths
+now handle ServerError on 500, 502, 503 and 504 as well, with a shorter
+backoff since server errors usually clear in seconds.
