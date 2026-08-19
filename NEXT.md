@@ -86,15 +86,35 @@
 - TRUNCATE chunks, re-ingest (342 chunks, ~15 min with throttling)
 - python -m evals.run, record the number against 86%
 
-# Next session
+# Phase 3 plan
 
-Phase 3 begins: the frontend.
+14. API shape: headline field, citations carry their text, ratio endpoint
+15-17. Frontend: Vite + React + TS + Tailwind, mobile first
+18. Streaming via SSE
+19-20. Jurisdiction: tag chunks, filter retrieval, setup screen
+
+Rationale: API shape first so the frontend is only built once. Jurisdiction
+last because it needs a re-ingest, new eval cases and a UI flow.
+
+# Next session (14)
 
 - docker compose up -d, activate .venv, alembic upgrade head
-- npm create vite@latest frontend -- --template react-ts
-- Install Tailwind, get the dev server running
-- One component: question box, calls /ask, renders the answer
-- Configure CORS on the FastAPI side for http://localhost:5173
+- Add headline: str to ComplianceAnswer, update prompts/answer_json.md
+- Change clauses to list[Citation] with reference, content, similarity
+- Add POST /ratio, pure calculation, no model call
+- Tests for all three
+- Re-run evals: check_citations will need updating for the new shape
+
+## Product decisions to make in Phase 3
+
+Design for a centre director on their phone, standing in a room, not at a
+desk. In rough priority:
+
+1. Jurisdiction picked once at setup, then filtered silently
+2. Lead with the answer, not the paragraph (add a headline field)
+3. Citations that expand to show the retrieved regulation text
+4. A ratio calculator alongside the Q&A, no model call needed
+5. Streaming, so three seconds does not feel broken
 
 ## Known, deferred
 

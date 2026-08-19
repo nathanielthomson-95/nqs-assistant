@@ -477,3 +477,42 @@ The retry logic caught errors.ClientError, which covers 429, and a
 transient 503 fell straight through and killed the run. Both retry paths
 now handle ServerError on 500, 502, 503 and 504 as well, with a shorter
 backoff since server errors usually clear in seconds.
+
+## 2026-08-19 The system found a real ambiguity, and that exposed a gap
+
+Asked for the 24 to 36 month ratio without a jurisdiction, the system
+declined and explained why: Regulations 123, 275, 326 and 357 apply in
+place of one another depending on state and date, and it could not pick
+one without knowing which. It named the conflicting regulations rather
+than choosing.
+
+That is correct behaviour on ambiguous input and a much better outcome
+than the confident wrong answer this question produced three iterations
+ago. But it is a bad product experience. A director in NSW wants their
+number, not a list of four regulations and an instruction to check.
+
+The gap is that the system has no jurisdiction. Chapter 7 exists precisely
+because ratios differ by state and phase in over time, and Centre.state
+already exists in the model and is unused.
+
+Two ways to close it, deferred to Phase 5:
+- Store a jurisdiction on each chunk at ingest and filter retrieval
+  against the centre's state. Cleaner, needs a re-ingest.
+- Detect conflicting jurisdictional variants at answer time and respond
+  with a clarifying question rather than an answer. More work, better
+  product.
+
+## 2026-08-19 Cost and latency baseline
+
+With logging finally attached (the logger had no handler, so every
+instrumentation line had been going nowhere since Phase 2), a question
+costs roughly 1,600 to 1,900 input tokens and 70 to 150 output tokens,
+with 2 to 3 seconds of model latency plus about 200ms for embedding and
+retrieval.
+
+Most of the input is the eight retrieved chunks. Retrieving fewer would
+cut cost but the eval set showed eight is what fixed the ratio questions,
+so the cost is buying accuracy.
+
+Worth noting the evals could never have caught the silent logging. They
+check answers, not instrumentation. Manual use found it in one session.
